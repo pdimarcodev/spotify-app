@@ -18,13 +18,6 @@ const artistsReducer = (state = initialState, action = {}) => {
         artistas: action.payload.artists,
       };
     case ADD_ARTISTS_FAV:
-      console.log ({
-        ...state,
-        favoritos: {
-          ...state.favoritos,
-          [`${action.payload.name}`]: action.payload.fav,
-        },
-      });
       return {
         ...state,
         favoritos: {

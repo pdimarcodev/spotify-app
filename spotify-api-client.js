@@ -25,7 +25,7 @@ export const isLoggedIn = () => {
 
 export const authorize = () => {
   const redirectUrl = AuthSession.getRedirectUrl ();
-  console.log (redirectUrl);
+
   return AuthSession.startAsync ({
     authUrl: `https://accounts.spotify.com/authorize?response_type=token` +
       `&client_id=${SPOTIFY_CLIENT_ID}` +
