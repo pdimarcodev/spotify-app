@@ -6,6 +6,7 @@ import HomeScreen from './screens/Home';
 import AuthLoadingScreen from './screens/AuthLoadingScreen';
 import SignInScreen from './screens/SignInScreen';
 import {Provider} from 'react-redux';
+import rootReducer from './reducers';
 
 const AppStack = createStackNavigator ({Home: HomeScreen});
 const AuthStack = createStackNavigator ({SignIn: SignInScreen});
@@ -24,6 +25,10 @@ const AppContainer = createAppContainer (
 );
 export default class App extends React.Component {
   render () {
-    return <AppContainer />;
+    return (
+      <Provider store={rootReducer}>
+        <AppContainer />
+      </Provider>
+    );
   }
 }

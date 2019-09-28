@@ -1,44 +1,84 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import React from 'react';
+import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {ADD_ARTISTS_FAV} from './reducers/artists';
 
-export default class ArtistaFavorito extends React.Component {
-  handleStarButtonPress = () => {
-    // TODO: acá se debería hacer un `dispatch` del action que marque el artista como favorito
+import {saveArtistFav, getArtistsFav} from './firestore';
+
+class ArtistaFavorito extends React.Component {
+  async componentDidMount () {
+    const favorites = await getArtistsFav ();
+    favorites.forEach (e => {
+      this.props.addToFavorites (e.name, e.isFav);
+    });
+    //console.log (favorites);
   }
 
-  render() {
-    const {
-      artista: { nombre, imagen },
-      esFavorito,
-    } = this.props
+  handleStarButtonPress = () => {
+    const {artista: {nombre}, esFavorito, addToFavorites} = this.props;
+    saveArtistFav ({
+      name: nombre,
+      isFav: !esFavorito,
+    });
+    addToFavorites (nombre, !esFavorito);
+    // TODO: acá se debería hacer un `dispatch` del action que marque el artista como favorito
+  };
+
+  render () {
+    const {artista: {nombre, imagen}, esFavorito} = this.props;
+    // console.log (this.props);
+    // console.log (this.props.artista);
 
     return (
       <View style={[styles.container, styles.conSombra]}>
-        <Image source={{ uri: imagen }} style={styles.imagen} />
+        <Image source={{uri: imagen}} style={styles.imagen} />
         <View style={styles.dataContainer}>
           <Text style={styles.nombre}>{nombre}</Text>
           <TouchableOpacity onPress={this.handleStarButtonPress}>
-            <Text style={[styles.starButton, esFavorito && styles.favorito]}>🌟</Text>
+            <Text style={[styles.starButton, esFavorito && styles.favorito]}>
+              🌟
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
-    )
+    );
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    ...state,
+    esFavorito: state.artists.favoritos[ownProps.artista.nombre] || false,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    addToFavorites: (name, isFav) => {
+      return dispatch ({
+        type: ADD_ARTISTS_FAV,
+        payload: {
+          name,
+          fav: isFav,
+        },
+      });
+    },
+  };
+};
+export default connect (mapStateToProps, mapDispatchToProps) (ArtistaFavorito);
+
 ArtistaFavorito.propTypes = {
-  artista: PropTypes.shape({
+  artista: PropTypes.shape ({
     nombre: PropTypes.string,
     imagen: PropTypes.string,
   }),
-}
+};
 
 ArtistaFavorito.defaultProps = {
   artista: {},
-}
+};
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create ({
   container: {
     height: 150,
     width: 350,
@@ -63,7 +103,7 @@ const styles = StyleSheet.create({
   },
 
   favorito: {
-    fontSize: 35,
+    fontSize: 40,
   },
 
   imagen: {
@@ -85,4 +125,4 @@ const styles = StyleSheet.create({
   dataContainer: {
     flex: 1,
   },
-})
+});

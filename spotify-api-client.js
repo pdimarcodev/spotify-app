@@ -1,7 +1,7 @@
 import {AuthSession} from 'expo';
 import {getItemAsync, deleteItemAsync, setItemAsync} from 'expo-secure-store';
 
-const SPOTIFY_CLIENT_ID = 'bb223824c29844c7999ac5bc0ab7fdff';
+const SPOTIFY_CLIENT_ID = 'a56baf1c8a0143f78ad74a73483fca11';
 const SECURE_STORE_ACCESS_TOKEN_KEY = 'spotifyAccessToken';
 
 let token;
@@ -25,7 +25,7 @@ export const isLoggedIn = () => {
 
 export const authorize = () => {
   const redirectUrl = AuthSession.getRedirectUrl ();
-
+  console.log (redirectUrl);
   return AuthSession.startAsync ({
     authUrl: `https://accounts.spotify.com/authorize?response_type=token` +
       `&client_id=${SPOTIFY_CLIENT_ID}` +
@@ -60,8 +60,9 @@ export const getUserArtistsPromise = () => {
       }
 
       const artistas = result.artists.items.map (
-        ({name: nombre, images, followers: {total: seguidores}}) => {
+        ({id, name: nombre, images, followers: {total: seguidores}}) => {
           return {
+            id,
             nombre,
             seguidores,
             imagen: images[0].url,

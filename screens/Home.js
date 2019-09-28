@@ -1,25 +1,26 @@
-import React from 'react'
-import { Button, StyleSheet, Text, View, ScrollView } from 'react-native'
-import { authorize, logout, getUserArtistsPromise } from '../spotify-api-client'
-import ArtistaFavorito from '../ArtistaFavorito'
+import React from 'react';
+import {Button, StyleSheet, Text, View, ScrollView} from 'react-native';
+import {authorize, logout, getUserArtistsPromise} from '../spotify-api-client';
+
+import ArtistaFavorito from '../ArtistaFavorito';
 
 export default class HomeScreen extends React.Component {
   state = {
     result: null,
-  }
+  };
 
-  componentDidMount() {
-    getUserArtistsPromise().then(artistas => this.setState({ artistas }))
+  componentDidMount () {
+    getUserArtistsPromise ().then (artistas => this.setState ({artistas}));
   }
 
   _handleLogoutButtonPress = () => {
-    logout().then(() => {
-      this.props.navigation.navigate('Auth')
-    })
-  }
+    logout ().then (() => {
+      this.props.navigation.navigate ('Auth');
+    });
+  };
 
-  render() {
-    const { loggedIn, artistas } = this.state
+  render () {
+    const {loggedIn, artistas} = this.state;
 
     return (
       <View style={styles.container}>
@@ -28,17 +29,20 @@ export default class HomeScreen extends React.Component {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollViewContent}
         >
-          {artistas && artistas.map(artist => <ArtistaFavorito artista={artist} key={artist.nombre} />)}
+          {artistas &&
+            artistas.map (artist => (
+              <ArtistaFavorito artista={artist} key={artist.nombre} />
+            ))}
         </ScrollView>
         <View style={styles.buttonsContainer}>
           <Button title="Logout" onPress={this._handleLogoutButtonPress} />
         </View>
       </View>
-    )
+    );
   }
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create ({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -65,4 +69,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 20,
   },
-})
+});
